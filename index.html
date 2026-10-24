@@ -231,7 +231,7 @@
           <div class="flex items-center gap-2">
             <span class="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-pulse"></span>
             <span class="font-black text-sm tracking-tight text-white flex items-center gap-1.5">
-              <span>🧩 스마트 4단계 레고 조립 파이프라인</span>
+              <span class="break-keep-all">🧩 스마트 4단계 레고 조립 파이프라인</span>
               <span class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-500/30">Lego Assembly Architecture</span>
             </span>
           </div>
@@ -258,7 +258,7 @@
               <div class="text-[11px] font-black text-blue-200 group-hover:text-cyan-300 flex items-center gap-1">
                 <span>🧩 Step 2. UI 부품 (Parts)</span>
               </div>
-              <div class="text-[10px] text-slate-300">165종 전수 컴포넌트 조립</div>
+              <div class="text-[10px] text-slate-300">UI 전수 컴포넌트 조립</div>
             </div>
           </button>
 
@@ -557,40 +557,46 @@
     </div>
   </div>
 
+    <!-- ========================================== -->
+  <!-- 6. FLOATING QUICK PROMPT DOCK (모바일 최적화 슬림형 바구니 독) -->
   <!-- ========================================== -->
-  <!-- 6. FLOATING QUICK PROMPT DOCK (하단 고정 바구니) -->
-  <!-- ========================================== -->
-  <div id="floatingPromptDock" class="fixed bottom-5 left-1/2 -translate-x-1/2 z-40 bg-slate-900/95 text-white backdrop-blur-md px-5 py-3 rounded-2xl shadow-2xl border border-slate-700 flex items-center gap-4 transition-all duration-300">
-    <div class="flex items-center gap-2.5">
-      <div class="relative">
-        <i data-lucide="shopping-bag" class="w-5 h-5 text-blue-400"></i>
-        <span id="dockBadgeCount" class="absolute -top-1.5 -right-2 bg-blue-500 text-white font-black text-[10px] w-4 h-4 rounded-full flex items-center justify-center">0</span>
+  <div id="floatingPromptDock" class="fixed bottom-3 sm:bottom-5 left-1/2 -translate-x-1/2 z-40 bg-slate-900/95 text-white backdrop-blur-md px-3.5 sm:px-5 py-2.5 sm:py-3 rounded-2xl shadow-2xl border border-slate-700/80 w-[calc(100%-20px)] max-w-xl transition-all duration-300">
+    <div class="flex items-center justify-between gap-2">
+      <!-- 좌측: 바구니 정보 (원클릭 모달 열기) -->
+      <div onclick="openPromptModal()" class="flex items-center gap-2 cursor-pointer hover:opacity-80 transition shrink-0 min-w-0">
+        <div class="relative shrink-0">
+          <i data-lucide="shopping-bag" class="w-5 h-5 text-blue-400"></i>
+          <span id="dockBadgeCount" class="absolute -top-1.5 -right-2 bg-blue-500 text-white font-black text-[10px] w-4 h-4 rounded-full flex items-center justify-center shadow-sm">0</span>
+        </div>
+        <div class="text-xs truncate max-w-[130px] xs:max-w-[160px] sm:max-w-xs break-keep-all">
+          <span class="font-bold hidden sm:inline">토큰 바구니:</span>
+          <span id="dockSummaryText" class="text-slate-300 font-mono text-[11px] ml-0.5">선택 토큰 없음</span>
+        </div>
       </div>
-      <div class="text-xs">
-        <span class="font-bold">토큰 바구니:</span>
-        <span id="dockSummaryText" class="text-slate-300 font-mono text-[11px] ml-1">선택된 토큰 없음</span>
-      </div>
-    </div>
 
-    <div class="flex items-center gap-2">
-      
-      <!-- [나만의 맞춤 프리셋 매니저] -->
-      <div class="flex items-center gap-1.5 border-l border-slate-700 pl-3">
-        <select id="userPresetSelect" onchange="loadUserCustomPreset(this.value)" class="bg-slate-800 text-white border border-slate-700 rounded-xl px-2.5 py-1 text-xs font-bold focus:outline-none focus:ring-2 focus:ring-blue-500">
-          <option value="">📂 내 저장 프리셋...</option>
-        </select>
-        <button onclick="saveUserCustomPresetPrompt()" class="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-blue-400 hover:text-white border border-slate-700 rounded-xl text-xs font-bold transition flex items-center gap-1" title="현재 담긴 토큰을 새 프리셋으로 저장">
-          <span>💾 내 프리셋 저장</span>
+      <!-- 우측: 액션 컨트롤러 -->
+      <div class="flex items-center gap-1.5 shrink-0">
+        <!-- 데스크톱 전용 프리셋 셀렉트 (모바일에서는 모달 내부에서 완벽 지원) -->
+        <div class="hidden md:flex items-center gap-1.5 border-l border-slate-700 pl-2.5">
+          <select id="userPresetSelect" onchange="loadUserCustomPreset(this.value)" class="bg-slate-800 text-white border border-slate-700 rounded-xl px-2 py-1 text-xs font-bold focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <option value="">📂 내 저장 프리셋...</option>
+          </select>
+          <button onclick="saveUserCustomPresetPrompt()" class="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-blue-400 hover:text-white border border-slate-700 rounded-xl text-xs font-bold transition flex items-center gap-1 whitespace-nowrap">
+            <span>💾 저장</span>
+          </button>
+        </div>
+
+        <!-- 비우기 버튼 -->
+        <button onclick="clearBasket()" class="px-2 sm:px-2.5 py-1.5 text-slate-400 hover:text-white text-xs font-semibold rounded-lg hover:bg-slate-800 transition whitespace-nowrap" title="바구니 비우기">
+          <span>비우기</span>
+        </button>
+
+        <!-- 프롬프트 추출 메인 버튼 -->
+        <button onclick="openPromptModal()" class="px-3 sm:px-4 py-1.5 bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold rounded-xl shadow-md transition active:scale-95 flex items-center gap-1.5 whitespace-nowrap">
+          <i data-lucide="sparkles" class="w-3.5 h-3.5 text-blue-200"></i>
+          <span>프롬프트 추출</span>
         </button>
       </div>
-
-      <button onclick="clearBasket()" class="px-2.5 py-1 text-slate-400 hover:text-white text-xs font-semibold rounded-lg hover:bg-slate-800 transition">
-        비우기
-      </button>
-      <button onclick="openPromptModal()" class="px-4 py-1.5 bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold rounded-xl shadow-md transition active:scale-95 flex items-center gap-1.5">
-        <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
-        <span>6대 환경 프롬프트 추출</span>
-      </button>
     </div>
   </div>
 
